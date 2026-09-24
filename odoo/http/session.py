@@ -691,4 +691,6 @@ def save_session(request: Request, env: Environment | None = None) -> None:
             sess.sid,
             max_age=get_session_max_inactivity(env),
             httponly=True,
+            secure=bool(os.environ.get('AGENT_ODOO_HOST')),
+            samesite='None' if os.environ.get('AGENT_ODOO_HOST') else None,
         )
