@@ -2,6 +2,7 @@
 
 import json
 import logging
+import os
 from urllib.parse import urlsplit
 
 import psycopg2
@@ -168,8 +169,13 @@ class Home(Controller):
 
         response = request.render('web.login', values)
         response.headers['Cache-Control'] = 'no-cache'
-        response.headers['X-Frame-Options'] = 'SAMEORIGIN'
-        response.headers['Content-Security-Policy'] = "frame-ancestors 'self'"
+        if os.environ.get('AGENT_ODOO_HOST'):
+            # Superconductor embeds the live preview in its HTTPS app shell during development.
+            response.headers.pop('X-Frame-Options', None)
+            response.headers['Content-Security-Policy'] = "frame-ancestors 'self' https://superconductor.com https://*.superconductor.com"
+        else:
+            response.headers['X-Frame-Options'] = 'SAMEORIGIN'
+            response.headers['Content-Security-Policy'] = "frame-ancestors 'self'"
         return response
 
     @route('/web/login_successful', type='http', auth='user', website=True, sitemap=False)

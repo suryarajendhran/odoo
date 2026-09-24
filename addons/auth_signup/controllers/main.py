@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 import logging
+import os
 import werkzeug
 from werkzeug.urls import url_encode
 
@@ -89,8 +90,13 @@ class AuthSignupHome(Home):
                 return request.redirect('/web/login?%s' % url_encode({'login': user.login, 'redirect': '/web'}))
 
         response = request.render('auth_signup.signup', qcontext)
-        response.headers['X-Frame-Options'] = 'SAMEORIGIN'
-        response.headers['Content-Security-Policy'] = "frame-ancestors 'self'"
+        if os.environ.get('AGENT_ODOO_HOST'):
+            # Superconductor embeds the live preview in its HTTPS app shell during development.
+            response.headers.pop('X-Frame-Options', None)
+            response.headers['Content-Security-Policy'] = "frame-ancestors 'self' https://superconductor.com https://*.superconductor.com"
+        else:
+            response.headers['X-Frame-Options'] = 'SAMEORIGIN'
+            response.headers['Content-Security-Policy'] = "frame-ancestors 'self'"
         return response
 
     @http.route('/web/reset_password', type='http', auth='public', website=True, sitemap=False, captcha='password_reset', list_as_website_content=_lt("Reset Password"))
@@ -128,8 +134,13 @@ class AuthSignupHome(Home):
                 return request.redirect('/web/login?%s' % url_encode({'login': user.login, 'redirect': '/web'}))
 
         response = request.render('auth_signup.reset_password', qcontext)
-        response.headers['X-Frame-Options'] = 'SAMEORIGIN'
-        response.headers['Content-Security-Policy'] = "frame-ancestors 'self'"
+        if os.environ.get('AGENT_ODOO_HOST'):
+            # Superconductor embeds the live preview in its HTTPS app shell during development.
+            response.headers.pop('X-Frame-Options', None)
+            response.headers['Content-Security-Policy'] = "frame-ancestors 'self' https://superconductor.com https://*.superconductor.com"
+        else:
+            response.headers['X-Frame-Options'] = 'SAMEORIGIN'
+            response.headers['Content-Security-Policy'] = "frame-ancestors 'self'"
         return response
 
     def get_auth_signup_config(self):
