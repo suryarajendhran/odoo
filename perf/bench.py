@@ -96,8 +96,20 @@ def create_db_main(args):
         odoo_cmd(args, '-d', args.template_db, '-i', MODULES, '--with-demo', '--stop-after-init', '--log-level=warn'),
         check=True, env=server_env(),
     )
+    for query in TEMPLATE_SETUP_QUERIES:
+        subprocess.run(['psql', '-d', args.template_db, '-v', 'ON_ERROR_STOP=1', '-qc', query], check=True)
     _logger.info("database created in %.0fs", time.time() - t0)
     return 0
+
+
+# Run on the template database once the modules are installed, to keep the
+# journeys independent of external services.
+TEMPLATE_SETUP_QUERIES = [
+    # partner_autocomplete enriches the company through IAP (an outgoing HTTP
+    # request) the first time an admin loads the web client; the result
+    # changes the company data. Mark it as done, as Odoo's tests do.
+    "UPDATE res_company SET iap_enrich_auto_done = true",
+]
 
 
 def drop_db(args, db):
@@ -225,9 +237,10 @@ class NetworkCollector:
 
 def request_key(request):
     path = urlsplit(request['url']).path
-    if '/static/' in path or path.startswith('/web/assets/'):
-        # asset urls contain a checksum, keep them comparable across commits
-        path = path.rsplit('/', 1)[0] + '/*' if path.startswith('/web/assets/') else path
+    if path.startswith('/web/assets/'):
+        # /web/assets/<checksum>/<bundle>: the checksum changes with the code,
+        # keep the keys comparable across commits
+        path = '/web/assets/*/' + path.rsplit('/', 1)[-1]
     return f"{request['method']} {path}"
 
 
