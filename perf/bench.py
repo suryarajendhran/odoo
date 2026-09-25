@@ -109,6 +109,15 @@ TEMPLATE_SETUP_QUERIES = [
     # request) the first time an admin loads the web client; the result
     # changes the company data. Mark it as done, as Odoo's tests do.
     "UPDATE res_company SET iap_enrich_auto_done = true",
+    # The user's presence record is created once the web client's websocket
+    # reports activity, which may or may not happen before the measured
+    # iterations; its existence changes the queries of every request reading
+    # the presence (/odoo, /mail/store...). Create it upfront, as for any
+    # user who has already used the web client.
+    """INSERT INTO mail_presence (user_id, last_poll, last_presence, status)
+       SELECT id, now() AT TIME ZONE 'UTC', now() AT TIME ZONE 'UTC', 'online'
+         FROM res_users WHERE login = 'admin'
+       ON CONFLICT DO NOTHING""",
 ]
 
 
