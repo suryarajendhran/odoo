@@ -1,0 +1,584 @@
+{
+ "meta": {
+  "commit": "7f7c05d27697e8e9146fcfe6dd8a2746178ff81c",
+  "date": "2026-09-25T21:42:31Z",
+  "python": "3.12.14",
+  "chrome": "153.0.8010.52",
+  "cpu_count": 4,
+  "modules": "sale_management,crm,stock"
+ },
+ "journeys": {
+  "crm_pipeline_open": {
+   "description": "Open the CRM pipeline kanban view",
+   "counts": {
+    "sql_queries": 35,
+    "sql_rows": 285,
+    "py_calls": 49713,
+    "server_requests": 3,
+    "rpc_count": 3,
+    "js_bytes": 0,
+    "css_bytes": 0,
+    "rpc_bytes": 11439,
+    "owl_renders": 348
+   },
+   "requests": [
+    {
+     "request": "POST /web/dataset/call_kw/crm.lead/read_progress_bar",
+     "sql_queries": 4,
+     "sql_rows": 14,
+     "py_calls": 4455
+    },
+    {
+     "request": "POST /web/dataset/call_kw/crm.lead/web_read_group",
+     "sql_queries": 26,
+     "sql_rows": 264,
+     "py_calls": 40735
+    },
+    {
+     "request": "POST /web/dataset/call_kw/crm.team/get_team_switcher_data",
+     "sql_queries": 5,
+     "sql_rows": 7,
+     "py_calls": 4523
+    }
+   ],
+   "timings": {
+    "settled_ms": {
+     "median": 61.8
+    },
+    "ready_ms": {
+     "median": 49.9
+    },
+    "server_ms": {
+     "median": 63.3
+    },
+    "sql_ms": {
+     "median": 26.77
+    },
+    "script_ms": {
+     "median": 10.09
+    },
+    "task_ms": {
+     "median": 76.74
+    },
+    "js_heap_mb": {
+     "median": 96.79
+    }
+   },
+   "throttled": {
+    "settled_ms": {
+     "median": 177.8
+    },
+    "total_blocking_ms": {
+     "median": 55
+    },
+    "long_tasks": {
+     "median": 1
+    }
+   }
+  },
+  "discuss_channel_open": {
+   "description": "Open the General channel in Discuss",
+   "counts": {
+    "sql_queries": 113,
+    "sql_rows": 141,
+    "py_calls": 179025,
+    "server_requests": 3,
+    "rpc_count": 3,
+    "js_bytes": 0,
+    "css_bytes": 0,
+    "rpc_bytes": 26135,
+    "owl_renders": 310
+   },
+   "requests": [
+    {
+     "request": "GET /web/bundle/web.assets_emoji",
+     "sql_queries": 2,
+     "sql_rows": 2,
+     "py_calls": 1676
+    },
+    {
+     "request": "POST /mail/store",
+     "sql_queries": 23,
+     "sql_rows": 18,
+     "py_calls": 22382
+    },
+    {
+     "request": "POST /mail/store",
+     "sql_queries": 88,
+     "sql_rows": 121,
+     "py_calls": 154967
+    }
+   ],
+   "timings": {
+    "settled_ms": {
+     "median": 237.4
+    },
+    "ready_ms": {
+     "median": 214.2
+    },
+    "server_ms": {
+     "median": 144.97
+    },
+    "sql_ms": {
+     "median": 61.25
+    },
+    "script_ms": {
+     "median": 20.96
+    },
+    "task_ms": {
+     "median": 185.77
+    },
+    "js_heap_mb": {
+     "median": 242.32
+    }
+   },
+   "throttled": {
+    "settled_ms": {
+     "median": 688.7
+    },
+    "total_blocking_ms": {
+     "median": 247
+    },
+    "long_tasks": {
+     "median": 3
+    }
+   }
+  },
+  "sale_form_open": {
+   "description": "Open a sales order form from the list view",
+   "counts": {
+    "sql_queries": 107,
+    "sql_rows": 89,
+    "py_calls": 145486,
+    "server_requests": 5,
+    "rpc_count": 5,
+    "js_bytes": 0,
+    "css_bytes": 0,
+    "rpc_bytes": 6712,
+    "owl_renders": 185
+   },
+   "requests": [
+    {
+     "request": "POST /mail/store",
+     "sql_queries": 32,
+     "sql_rows": 23,
+     "py_calls": 45981
+    },
+    {
+     "request": "POST /web/dataset/call_kw/product.product/search_read",
+     "sql_queries": 6,
+     "sql_rows": 5,
+     "py_calls": 11088
+    },
+    {
+     "request": "POST /web/dataset/call_kw/sale.order.template/get_section_templates",
+     "sql_queries": 3,
+     "sql_rows": 2,
+     "py_calls": 4663
+    },
+    {
+     "request": "POST /web/dataset/call_kw/sale.order.template/search_read",
+     "sql_queries": 3,
+     "sql_rows": 3,
+     "py_calls": 2385
+    },
+    {
+     "request": "POST /web/dataset/call_kw/sale.order/web_read",
+     "sql_queries": 63,
+     "sql_rows": 56,
+     "py_calls": 81369
+    }
+   ],
+   "timings": {
+    "settled_ms": {
+     "median": 107.5
+    },
+    "ready_ms": {
+     "median": 59.2
+    },
+    "server_ms": {
+     "median": 164.37
+    },
+    "sql_ms": {
+     "median": 80.77
+    },
+    "script_ms": {
+     "median": 15.96
+    },
+    "task_ms": {
+     "median": 69.86
+    },
+    "js_heap_mb": {
+     "median": 107.55
+    }
+   },
+   "throttled": {
+    "settled_ms": {
+     "median": 263.7
+    },
+    "total_blocking_ms": {
+     "median": 45
+    },
+    "long_tasks": {
+     "median": 2
+    }
+   }
+  },
+  "sale_list_open": {
+   "description": "Open the Sales Orders list view from the web client",
+   "counts": {
+    "sql_queries": 37,
+    "sql_rows": 178,
+    "py_calls": 74466,
+    "server_requests": 4,
+    "rpc_count": 4,
+    "js_bytes": 0,
+    "css_bytes": 0,
+    "rpc_bytes": 18880,
+    "owl_renders": 328
+   },
+   "requests": [
+    {
+     "request": "POST /web/dataset/call_kw/sale.order.template/search_read",
+     "sql_queries": 3,
+     "sql_rows": 3,
+     "py_calls": 2385
+    },
+    {
+     "request": "POST /web/dataset/call_kw/sale.order.template/search_read",
+     "sql_queries": 3,
+     "sql_rows": 3,
+     "py_calls": 2385
+    },
+    {
+     "request": "POST /web/dataset/call_kw/sale.order/retrieve_sale_dashboard",
+     "sql_queries": 9,
+     "sql_rows": 9,
+     "py_calls": 21671
+    },
+    {
+     "request": "POST /web/dataset/call_kw/sale.order/web_search_read",
+     "sql_queries": 22,
+     "sql_rows": 163,
+     "py_calls": 48025
+    }
+   ],
+   "timings": {
+    "settled_ms": {
+     "median": 70.9
+    },
+    "ready_ms": {
+     "median": 64.6
+    },
+    "server_ms": {
+     "median": 93.18
+    },
+    "sql_ms": {
+     "median": 41.33
+    },
+    "script_ms": {
+     "median": 11.95
+    },
+    "task_ms": {
+     "median": 87.41
+    },
+    "js_heap_mb": {
+     "median": 95.65
+    }
+   },
+   "throttled": {
+    "settled_ms": {
+     "median": 198.8
+    },
+    "total_blocking_ms": {
+     "median": 87
+    },
+    "long_tasks": {
+     "median": 2
+    }
+   }
+  },
+  "sale_order_confirm": {
+   "description": "Confirm a quotation from its form view",
+   "counts": {
+    "sql_queries": 253,
+    "sql_rows": 394,
+    "py_calls": 350158,
+    "server_requests": 3,
+    "rpc_count": 3,
+    "js_bytes": 0,
+    "css_bytes": 0,
+    "rpc_bytes": 12031,
+    "owl_renders": 296
+   },
+   "requests": [
+    {
+     "request": "POST /mail/store",
+     "sql_queries": 47,
+     "sql_rows": 35,
+     "py_calls": 59620
+    },
+    {
+     "request": "POST /web/dataset/call_button/sale.order/action_confirm",
+     "sql_queries": 126,
+     "sql_rows": 158,
+     "py_calls": 158905
+    },
+    {
+     "request": "POST /web/dataset/call_kw/sale.order/web_read",
+     "sql_queries": 80,
+     "sql_rows": 201,
+     "py_calls": 131592
+    }
+   ],
+   "timings": {
+    "settled_ms": {
+     "median": 222.9
+    },
+    "ready_ms": {
+     "median": 218.5
+    },
+    "server_ms": {
+     "median": 241.55
+    },
+    "sql_ms": {
+     "median": 104.68
+    },
+    "script_ms": {
+     "median": 7.1
+    },
+    "task_ms": {
+     "median": 63.12
+    },
+    "js_heap_mb": {
+     "median": 84.27
+    }
+   },
+   "throttled": {
+    "settled_ms": {
+     "median": 350.9
+    },
+    "total_blocking_ms": {
+     "median": 0
+    },
+    "long_tasks": {
+     "median": 1
+    }
+   }
+  },
+  "webclient_cold_load": {
+   "description": "Load /odoo with an empty browser cache (first visit of the day)",
+   "counts": {
+    "sql_queries": 153,
+    "sql_rows": 294,
+    "py_calls": 185558,
+    "server_requests": 14,
+    "rpc_count": 5,
+    "js_bytes": 7573604,
+    "css_bytes": 2391481,
+    "rpc_bytes": 77009,
+    "owl_renders": 139
+   },
+   "requests": [
+    {
+     "request": "GET /odoo",
+     "sql_queries": 26,
+     "sql_rows": 34,
+     "py_calls": 28203
+    },
+    {
+     "request": "GET /web/assets/2b3c7a2/*",
+     "sql_queries": 4,
+     "sql_rows": 4,
+     "py_calls": 3572
+    },
+    {
+     "request": "GET /web/assets/c19634f/*",
+     "sql_queries": 4,
+     "sql_rows": 4,
+     "py_calls": 3562
+    },
+    {
+     "request": "GET /web/assets/ce59f1f/*",
+     "sql_queries": 4,
+     "sql_rows": 4,
+     "py_calls": 3562
+    },
+    {
+     "request": "GET /web/assets/dc8881d/*",
+     "sql_queries": 4,
+     "sql_rows": 4,
+     "py_calls": 3562
+    },
+    {
+     "request": "GET /web/image/res.partner/2/avatar_128",
+     "sql_queries": 5,
+     "sql_rows": 5,
+     "py_calls": 5843
+    },
+    {
+     "request": "GET /web/image/res.partner/3/avatar_128",
+     "sql_queries": 5,
+     "sql_rows": 5,
+     "py_calls": 5843
+    },
+    {
+     "request": "GET /web/image/res.partner/6/avatar_128",
+     "sql_queries": 5,
+     "sql_rows": 5,
+     "py_calls": 5843
+    },
+    {
+     "request": "GET /web/static/img/favicon.ico",
+     "sql_queries": 0,
+     "sql_rows": 0,
+     "py_calls": 605
+    },
+    {
+     "request": "GET /web/webclient/load_menus",
+     "sql_queries": 2,
+     "sql_rows": 2,
+     "py_calls": 1652
+    },
+    {
+     "request": "GET /web/webclient/translations",
+     "sql_queries": 2,
+     "sql_rows": 2,
+     "py_calls": 2627
+    },
+    {
+     "request": "POST /mail/store",
+     "sql_queries": 48,
+     "sql_rows": 176,
+     "py_calls": 60225
+    },
+    {
+     "request": "POST /mail/store",
+     "sql_queries": 37,
+     "sql_rows": 42,
+     "py_calls": 53414
+    },
+    {
+     "request": "POST /web/action/load",
+     "sql_queries": 7,
+     "sql_rows": 7,
+     "py_calls": 7045
+    }
+   ],
+   "timings": {
+    "settled_ms": {
+     "median": 813.8
+    },
+    "ready_ms": {
+     "median": 481.9
+    },
+    "server_ms": {
+     "median": 209.03
+    },
+    "sql_ms": {
+     "median": 84.4
+    },
+    "script_ms": {
+     "median": 171.16
+    },
+    "task_ms": {
+     "median": 418.34
+    },
+    "js_heap_mb": {
+     "median": 29.22
+    }
+   },
+   "throttled": {
+    "settled_ms": {
+     "median": 1881.5
+    },
+    "total_blocking_ms": {
+     "median": 866
+    },
+    "long_tasks": {
+     "median": 6
+    }
+   }
+  },
+  "webclient_warm_load": {
+   "description": "Reload /odoo with a populated browser cache (F5)",
+   "counts": {
+    "sql_queries": 115,
+    "sql_rows": 256,
+    "py_calls": 145171,
+    "server_requests": 5,
+    "rpc_count": 4,
+    "js_bytes": 0,
+    "css_bytes": 0,
+    "rpc_bytes": 73561,
+    "owl_renders": 135
+   },
+   "requests": [
+    {
+     "request": "GET /odoo/discuss",
+     "sql_queries": 26,
+     "sql_rows": 34,
+     "py_calls": 28208
+    },
+    {
+     "request": "GET /web/webclient/load_menus",
+     "sql_queries": 2,
+     "sql_rows": 2,
+     "py_calls": 1652
+    },
+    {
+     "request": "GET /web/webclient/translations",
+     "sql_queries": 2,
+     "sql_rows": 2,
+     "py_calls": 1672
+    },
+    {
+     "request": "POST /mail/store",
+     "sql_queries": 48,
+     "sql_rows": 176,
+     "py_calls": 60225
+    },
+    {
+     "request": "POST /mail/store",
+     "sql_queries": 37,
+     "sql_rows": 42,
+     "py_calls": 53414
+    }
+   ],
+   "timings": {
+    "settled_ms": {
+     "median": 443.8
+    },
+    "ready_ms": {
+     "median": 148.2
+    },
+    "server_ms": {
+     "median": 108.94
+    },
+    "sql_ms": {
+     "median": 39.28
+    },
+    "script_ms": {
+     "median": -0.5
+    },
+    "task_ms": {
+     "median": -9.4
+    },
+    "js_heap_mb": {
+     "median": 36.67
+    }
+   },
+   "throttled": {
+    "settled_ms": {
+     "median": 829.7
+    },
+    "total_blocking_ms": {
+     "median": 189
+    },
+    "long_tasks": {
+     "median": 3
+    }
+   }
+  }
+ }
+}
