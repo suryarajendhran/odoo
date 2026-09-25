@@ -1,0 +1,169 @@
+name: Performance
+
+# See perf/README.md: every journey's deterministic counters are compared to
+# perf/baseline.json (ratchet), wall-clock timings are reported only.
+
+on:
+  pull_request:
+    branches: ['20.0']
+  push:
+    branches: ['20.0']
+  workflow_dispatch:
+
+concurrency:
+  group: perf-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+permissions:
+  contents: read
+
+env:
+  PGHOST: localhost
+  PGPORT: '5432'
+  PGUSER: odoo
+  PGPASSWORD: odoo
+  PGDATABASE: postgres
+
+jobs:
+  benchmark:
+    name: Journey benchmark
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    permissions:
+      contents: read
+      pull-requests: write
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: odoo
+          POSTGRES_PASSWORD: odoo
+          POSTGRES_DB: postgres
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd pg_isready --health-interval 5s --health-timeout 5s --health-retries 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: |
+            requirements.txt
+            perf/requirements.txt
+
+      - name: Install dependencies
+        run: |
+          # python-ldap needs system headers and auth_ldap is not installed
+          grep -v '^python-ldap' requirements.txt > "$RUNNER_TEMP/requirements.txt"
+          pip install -r "$RUNNER_TEMP/requirements.txt"
+          # the benchmark driver gets its own virtualenv: playwright's
+          # dependencies conflict with the Odoo pins (greenlet)
+          python -m venv "$RUNNER_TEMP/bench-venv"
+          "$RUNNER_TEMP/bench-venv/bin/pip" install -r perf/requirements.txt
+          google-chrome --version
+          {
+            echo "PERF_ODOO_PYTHON=$(command -v python)"
+            echo "PERF_CHROME=$(command -v google-chrome)"
+            echo "BENCH=$RUNNER_TEMP/bench-venv/bin/python perf/bench.py"
+          } >> "$GITHUB_ENV"
+
+      - name: Create the benchmark database
+        run: $BENCH create-db
+
+      - name: Run the journeys
+        run: $BENCH run --output perf-results.json --server-log perf-server.log
+
+      - name: Compare with the baseline
+        id: compare
+        run: |
+          set +e
+          $BENCH compare perf-results.json --markdown perf-report.md > /dev/null
+          echo "exit_code=$?" >> "$GITHUB_OUTPUT"
+          cat perf-report.md >> "$GITHUB_STEP_SUMMARY"
+          # what perf/baseline.json should contain to accept these results
+          $BENCH update-baseline perf-results.json --baseline perf-baseline.json
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: perf-results
+          path: |
+            perf-results.json
+            perf-report.md
+            perf-server.log
+          retention-days: 90
+
+      - uses: actions/upload-artifact@v4
+        if: always() && hashFiles('perf-baseline.json') != ''
+        with:
+          name: perf-baseline
+          path: perf-baseline.json
+          retention-days: 90
+
+      - name: Comment on the pull request
+        # the token of pull requests from forks is read-only
+        if: always() && github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository && hashFiles('perf-report.md') != ''
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const marker = '<!-- perf-benchmark -->';
+            const runUrl = `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+            const body = `${marker}\n${fs.readFileSync('perf-report.md', 'utf8')}\n[Run details and artifacts](${runUrl})`;
+            const { data: comments } = await github.rest.issues.listComments({
+              ...context.repo, issue_number: context.issue.number, per_page: 100,
+            });
+            const existing = comments.find((c) => c.body.includes(marker));
+            if (existing) {
+              await github.rest.issues.updateComment({ ...context.repo, comment_id: existing.id, body });
+            } else {
+              await github.rest.issues.createComment({ ...context.repo, issue_number: context.issue.number, body });
+            }
+
+      - name: Enforce the ratchet
+        if: steps.compare.outputs.exit_code != '0'
+        run: |
+          echo "::error::Gated performance counters differ from perf/baseline.json, see the job summary"
+          exit 1
+
+  query-counts:
+    name: Query count tests
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: odoo
+          POSTGRES_PASSWORD: odoo
+          POSTGRES_DB: postgres
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd pg_isready --health-interval 5s --health-timeout 5s --health-retries 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: requirements.txt
+
+      - name: Install dependencies
+        run: |
+          grep -v '^python-ldap' requirements.txt > "$RUNNER_TEMP/requirements.txt"
+          pip install -r "$RUNNER_TEMP/requirements.txt"
+
+      - name: Run the query count tests
+        run: perf/run_query_count_tests.sh
+        env:
+          PYTHON: python
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: query-count-tests-log
+          path: query-count-tests.log
+          retention-days: 30
