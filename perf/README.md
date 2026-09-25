@@ -91,17 +91,20 @@ and the report lists these as *non-deterministic counters*.
 ## Running locally
 
 ```sh
-pip install -r requirements.txt -r perf/requirements.txt
-playwright install chromium        # or pass --chrome /usr/bin/google-chrome
+# the driver has its own virtualenv: playwright conflicts with some Odoo pins
+python3 -m venv .perf-venv && .perf-venv/bin/pip install -r perf/requirements.txt
+.perf-venv/bin/playwright install chromium    # or pass --chrome /usr/bin/google-chrome
+alias bench=".perf-venv/bin/python perf/bench.py --odoo-python $(command -v python3)"
 
-python perf/bench.py create-db                         # template database, once (~2 min)
-python perf/bench.py run --output perf-results.json    # all journeys (~4 min)
-python perf/bench.py run --journeys sale_form_open --runs 3 --throttled-runs 0
-python perf/bench.py compare perf-results.json         # exit code 1 if a gated counter changed
+bench create-db                         # template database, once (~2 min)
+bench run --output perf-results.json    # all journeys (~4 min)
+bench run --journeys sale_form_open --runs 3 --throttled-runs 0
+bench compare perf-results.json         # exit code 1 if a gated counter changed
 perf/run_query_count_tests.sh                          # assertQueryCount tests (~2 min)
 ```
 
-PostgreSQL is reached through the usual `PG*` environment variables. Databases
+`--odoo-python` (or `$PERF_ODOO_PYTHON`) is the interpreter that has the Odoo
+requirements. PostgreSQL is reached through the usual `PG*` environment variables. Databases
 and the filestore go to `.perf-data/` (or `$PERF_DATA_DIR`).
 
 The results JSON contains, for every journey, a per-request breakdown
@@ -114,8 +117,8 @@ queries.
    counters, where a change of one query shows up immediately.
 2. Open the PR. CI posts a comment with the comparison against the baseline.
 3. If counters went down, update the baseline in the PR: download the
-   `perf-baseline` artifact of the CI run (or run `python perf/bench.py
-   update-baseline perf-results.json`) and commit it as `perf/baseline.json`.
+   `perf-baseline` artifact of the CI run (or run `bench update-baseline
+   perf-results.json`) and commit it as `perf/baseline.json`.
 4. If a counter went up for a good reason (feature), do the same and explain
    the trade-off in the PR description. Reviewers own that decision.
 5. Check the timings in the report: if a counter improvement doesn't move

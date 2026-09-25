@@ -57,25 +57,33 @@ jobs:
         run: |
           # python-ldap needs system headers and auth_ldap is not installed
           grep -v '^python-ldap' requirements.txt > "$RUNNER_TEMP/requirements.txt"
-          pip install -r "$RUNNER_TEMP/requirements.txt" -r perf/requirements.txt
+          pip install -r "$RUNNER_TEMP/requirements.txt"
+          # the benchmark driver gets its own virtualenv: playwright's
+          # dependencies conflict with the Odoo pins (greenlet)
+          python -m venv "$RUNNER_TEMP/bench-venv"
+          "$RUNNER_TEMP/bench-venv/bin/pip" install -r perf/requirements.txt
           google-chrome --version
-          echo "PERF_CHROME=$(command -v google-chrome)" >> "$GITHUB_ENV"
+          {
+            echo "PERF_ODOO_PYTHON=$(command -v python)"
+            echo "PERF_CHROME=$(command -v google-chrome)"
+            echo "BENCH=$RUNNER_TEMP/bench-venv/bin/python perf/bench.py"
+          } >> "$GITHUB_ENV"
 
       - name: Create the benchmark database
-        run: python perf/bench.py create-db
+        run: $BENCH create-db
 
       - name: Run the journeys
-        run: python perf/bench.py run --output perf-results.json --server-log perf-server.log
+        run: $BENCH run --output perf-results.json --server-log perf-server.log
 
       - name: Compare with the baseline
         id: compare
         run: |
           set +e
-          python perf/bench.py compare perf-results.json --markdown perf-report.md > /dev/null
+          $BENCH compare perf-results.json --markdown perf-report.md > /dev/null
           echo "exit_code=$?" >> "$GITHUB_OUTPUT"
           cat perf-report.md >> "$GITHUB_STEP_SUMMARY"
           # what perf/baseline.json should contain to accept these results
-          python perf/bench.py update-baseline perf-results.json --baseline perf-baseline.json
+          $BENCH update-baseline perf-results.json --baseline perf-baseline.json
 
       - uses: actions/upload-artifact@v4
         if: always()

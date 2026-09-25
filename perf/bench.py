@@ -58,7 +58,7 @@ RPC_TYPES = ('XHR', 'Fetch')
 
 def odoo_cmd(args, *extra):
     return [
-        sys.executable, str(ROOT_DIR / 'odoo-bin'), 'server',
+        args.odoo_python, str(ROOT_DIR / 'odoo-bin'), 'server',
         f'--addons-path={ADDONS_PATH}',
         f'--data-dir={args.data_dir}',
         '--max-cron-threads=0',
@@ -509,6 +509,9 @@ def main():
     parser.add_argument('--data-dir', default=os.environ.get('PERF_DATA_DIR', str(DEFAULT_DATA_DIR)),
                         help="Odoo data dir (filestore) used by the benchmark databases")
     parser.add_argument('--template-db', default=DEFAULT_TEMPLATE_DB)
+    parser.add_argument('--odoo-python', default=os.environ.get('PERF_ODOO_PYTHON', sys.executable),
+                        help="Python interpreter with the Odoo requirements (default: the one running this script); "
+                             "the benchmark driver can live in its own virtualenv, see perf/README.md")
     sub = parser.add_subparsers(dest='command', required=True)
 
     p = sub.add_parser('create-db', help="create the template database")
