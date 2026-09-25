@@ -1,0 +1,2 @@
+# benchmark driver (perf/bench.py), on top of the Odoo requirements
+playwright==1.63.0

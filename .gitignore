@@ -51,3 +51,10 @@ package.json
 /man/
 /share/
 /src/
+
+# performance benchmark outputs (perf/README.md)
+/perf-results.json
+/perf-report.md
+/perf-server.log
+/perf-baseline.json
+/query-count-tests.log

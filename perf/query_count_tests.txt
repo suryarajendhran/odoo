@@ -1,0 +1,25 @@
+# Test classes using assertQueryCount, run by perf/run_query_count_tests.sh.
+#
+# Their expected counts are upper bounds calibrated for upstream's CI, where
+# many more modules are installed; with fewer modules the counts are lower,
+# which is logged ("Query count less than expected") but doesn't fail.
+# Going above the expected count fails.
+/base:TestCustomFields
+/base:TestPartner
+/base:TestPartnerAddressCompany
+/base:TestResCurrency
+/base:TestUsers2
+/base:TestViewInheritance
+/base:TestXMLID
+/base:test_res_lang
+/crm:TestLeadAssignPerf
+/crm:TestLeadConvertMass
+/mail:TestMailRender
+/mail:TestMenuRootLookupByModel
+/resource:TestCheckCollisionStress
+/resource:TestVariableResourceCalendarPerformance
+/sale_stock:TestPERF
+/web:TestPerfSessionInfo
+# already failing on 20.0, even with only `web` installed: the second
+# get_session_info request runs no query ("did not detect any queries")
+-/web:TestPerfSessionInfo.test_performance_session_info
