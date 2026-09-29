@@ -387,25 +387,25 @@
      "py_calls": 28203
     },
     {
-     "request": "GET /web/assets/2b3c7a2/*",
+     "request": "GET /web/assets/*/web.assets_web.min.css",
      "sql_queries": 4,
      "sql_rows": 4,
      "py_calls": 3572
     },
     {
-     "request": "GET /web/assets/c19634f/*",
+     "request": "GET /web/assets/*/web.assets_web.min.js",
      "sql_queries": 4,
      "sql_rows": 4,
      "py_calls": 3562
     },
     {
-     "request": "GET /web/assets/ce59f1f/*",
+     "request": "GET /web/assets/*/web.assets_web_print.min.css",
      "sql_queries": 4,
      "sql_rows": 4,
      "py_calls": 3562
     },
     {
-     "request": "GET /web/assets/dc8881d/*",
+     "request": "GET /web/assets/*/web.material_symbols_outlined.min.woff2",
      "sql_queries": 4,
      "sql_rows": 4,
      "py_calls": 3562

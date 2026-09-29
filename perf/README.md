@@ -76,6 +76,10 @@ The counters are reproducible, both between iterations and between
 invocations. A few precautions make that possible:
 
 * every run clones a template database, so earlier runs leave no data behind;
+* the template is made independent of external services and background
+  timing (`TEMPLATE_SETUP_QUERIES` in `bench.py`): no IAP company enrichment
+  (an outgoing HTTP call), and the user's presence record exists upfront
+  instead of being created whenever the websocket reports activity;
 * the server runs with `PYTHONHASHSEED=0`;
 * warm-up iterations fill the ORM caches and the browser cache first;
 * browser-cached responses are not counted (Chrome replays their `X-Perf-*`
