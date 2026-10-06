@@ -1,0 +1,12 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "odoo",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["odoo-bin", "-d", "odoo_dev", "--http-port", "8069", "--dev", "all"],
+      "port": 8069,
+      "autoPort": false
+    }
+  ]
+}
