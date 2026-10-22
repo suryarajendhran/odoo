@@ -429,8 +429,10 @@ class ResUsers(models.Model):
 
     @api.depends('all_group_ids')
     def _compute_role(self):
-        group_system = self.env.ref('base.group_system', raise_if_not_found=False)
-        group_user = self.env.ref('base.group_user', raise_if_not_found=False)
+        xmlid_to_res_id = self.env['ir.model.data']._xmlid_to_res_id
+        Groups = self.env['res.groups']
+        group_system = Groups.browse(xmlid_to_res_id('base.group_system', raise_if_not_found=False))
+        group_user = Groups.browse(xmlid_to_res_id('base.group_user', raise_if_not_found=False))
 
         for user in self:
             # A group is almost never held directly: ``base.group_user`` and the

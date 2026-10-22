@@ -103,7 +103,9 @@ class Binary(Controller):
                 ('res_id', '=', 0),
                 ('create_uid', '=', api.SUPERUSER_ID),
             ]
-            attachment = env['ir.attachment'].sudo().search(domain, limit=1)
+            attachment = env['ir.attachment'].sudo().search_fetch(domain, [
+                'name', 'mimetype', 'checksum', 'public', 'store_fname', 'url', 'write_date',
+            ], limit=1)
             if attachment:
                 stream = env['ir.binary']._get_stream_from(attachment, 'raw', filename)
         if stream is None:
