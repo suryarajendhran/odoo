@@ -434,6 +434,10 @@ def serve_db(request: Request) -> Response:
         if cr.readonly:
             cr.close()
             cr = request.env.registry.cursor()
+        elif readonly:
+            # no replica: a readonly route is served in the transaction that
+            # checked signaling, as it would be on a replica cursor
+            pass
         else:
             # the cursor is already a RW cursor, start a new transaction
             # that will avoid repeatable read serialization errors because
